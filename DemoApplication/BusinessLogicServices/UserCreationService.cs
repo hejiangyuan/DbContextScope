@@ -1,5 +1,6 @@
 ﻿using System;
 using Numero3.EntityFramework.Demo.CommandModel;
+using Numero3.EntityFramework.Demo.DatabaseContext;
 using Numero3.EntityFramework.Demo.DomainModel;
 using Numero3.EntityFramework.Demo.Repositories;
 using Numero3.EntityFramework.Interfaces;
@@ -47,6 +48,13 @@ namespace Numero3.EntityFramework.Demo.BusinessLogicServices
 
 				//-- Persist
 				_userRepository.Add(user);
+
+                //dbContextScope.Users.Add(user);
+
+                //AmbientScope.Users.GetTotalByUserId(this.Id);
+
+			    //dbContextScope.DbContexts.Get<UserManagementDbContext>().Users.Add(user);
+
 				dbContextScope.SaveChanges();
 			}
 		}

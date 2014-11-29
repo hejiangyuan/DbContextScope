@@ -12,9 +12,11 @@ namespace Numero3.EntityFramework.Demo
 	{
 		static void Main(string[] args)
 		{
+
 			//-- Poor-man DI - build our dependencies by hand for this demo
 
-		    var dbcontextFactory = new UserManagementDbContextFactory("db2");
+            //var dbcontextFactory = new UserManagementDbContextFactory("data source=192.168.0.11;initial catalog=DbContextScopeDemo1;persist security info=True;user id=test;password=111111;MultipleActiveResultSets=True;App=EntityFramework");
+            var dbcontextFactory = new UserManagementDbContextFactory("server=192.168.0.15;port=3306;AutoEnlist=true;user id=root;password=jooge2012;persistsecurityinfo=True;database=test;oldguids=True");
 
             var dbContextScopeFactory = new DbContextScopeFactory(dbcontextFactory);
 			var ambientDbContextLocator = new AmbientDbContextLocator();
@@ -132,6 +134,15 @@ namespace Numero3.EntityFramework.Demo
 				Console.WriteLine("Calculating and storing the credit score of all users in the database in parallel...");
 				userCreditScoreService.UpdateCreditScoreForAllUsers();
 				Console.WriteLine("Done.");
+
+                Console.WriteLine("Trying to retrieve users by where clause.");
+                var users = userQueryService.GetUserByWhereClause(" WelcomeEmailSent = 1 ");
+                Console.WriteLine("OK. WelcomeEmailSent user count: {0}", users.Count());
+
+                Console.WriteLine("Press enter to continue...");
+                Console.ReadLine();
+
+
 			}
 			catch (Exception e)
 			{

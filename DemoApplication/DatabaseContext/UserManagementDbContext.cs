@@ -9,8 +9,8 @@ namespace Numero3.EntityFramework.Demo.DatabaseContext
 		// Map our 'User' model by convention
 		public DbSet<User> Users { get; set; }
 
-		public UserManagementDbContext(string connName) : 
-            base(connName)
+        public UserManagementDbContext(string nameOrConnectionString) : 
+            base(nameOrConnectionString)
 		{}
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)

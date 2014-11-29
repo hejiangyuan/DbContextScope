@@ -137,5 +137,16 @@ namespace Numero3.EntityFramework.Demo.BusinessLogicServices
 				return _userRepository.Get(userId);
 			}
 		}
+
+        public IEnumerable<User> GetUserByWhereClause(string whereClause)
+	    {
+            using (_dbContextScopeFactory.Create())
+            {
+                var user = _userRepository.GetList(whereClause).ToList();
+
+                return user;
+            }
+	    }
+
 	}
 }

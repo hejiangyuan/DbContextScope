@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Numero3.EntityFramework.Demo.DatabaseContext;
 using Numero3.EntityFramework.Demo.DomainModel;
@@ -59,5 +60,11 @@ namespace Numero3.EntityFramework.Demo.Repositories
 		{
 			DbContext.Users.Add(user);
 		}
+
+	    public IEnumerable<User> GetList(string whereClause)
+	    {
+	        return DbContext.Users.SqlQuery("select * from Users where " + whereClause);
+	    }
+
 	}
 }
