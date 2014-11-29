@@ -55,6 +55,7 @@
     <Compile Include="BusinessLogicServices\UserEmailService.cs" />
     <Compile Include="CommandModel\UserCreationSpec.cs" />
     <Compile Include="DatabaseContext\UserFluentMap.cs" />
+    <Compile Include="DatabaseContext\UserManagementDbContextFactory.cs" />
     <Compile Include="DomainModel\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

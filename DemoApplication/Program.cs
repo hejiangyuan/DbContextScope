@@ -13,7 +13,10 @@ namespace Numero3.EntityFramework.Demo
 		static void Main(string[] args)
 		{
 			//-- Poor-man DI - build our dependencies by hand for this demo
-			var dbContextScopeFactory = new DbContextScopeFactory();
+
+		    var dbcontextFactory = new UserManagementDbContextFactory("db2");
+
+            var dbContextScopeFactory = new DbContextScopeFactory(dbcontextFactory);
 			var ambientDbContextLocator = new AmbientDbContextLocator();
 			var userRepository = new UserRepository(ambientDbContextLocator);
 
