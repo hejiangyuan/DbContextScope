@@ -98,5 +98,7 @@ namespace Numero3.EntityFramework.Interfaces
         /// Save the scope instead.
         /// </summary>
         IDbContextCollection DbContexts { get; }
+
+
     }
 }

@@ -1,20 +1,21 @@
 ﻿using System.Data.Entity;
 using System.Reflection;
+using Numero3.EntityFramework.Demo.DatabaseContext;
 using Numero3.EntityFramework.Demo.DomainModel;
 
-namespace Numero3.EntityFramework.Demo.DatabaseContext
+namespace Numero3.EntityFramework.Demo.OtherDatabaseContext
 {
-	public class UserManagementDbContext : DbContext
+	public class UserClassManagementDbContext : DbContext
 	{
 		// Map our 'User' model by convention
-		public DbSet<User> Users { get; set; }
+        public DbSet<UserClass> UserClass { get; set; }
 
-        public UserManagementDbContext()
-            : this("db1")
-        {
-        }
+	    public UserClassManagementDbContext() : base("db1")
+	    {
+	        
+	    }
 
-	    public UserManagementDbContext(string nameOrConnectionString) :
+        public UserClassManagementDbContext(string nameOrConnectionString) :
 	        base(nameOrConnectionString)
 	    {
 	        

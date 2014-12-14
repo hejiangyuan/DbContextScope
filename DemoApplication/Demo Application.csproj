@@ -50,6 +50,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,13 +58,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BusinessLogicServices\UserClassService.cs" />
     <Compile Include="BusinessLogicServices\UserCreationService.cs" />
     <Compile Include="BusinessLogicServices\UserCreditScoreService.cs" />
     <Compile Include="BusinessLogicServices\UserEmailService.cs" />
     <Compile Include="CommandModel\UserCreationSpec.cs" />
     <Compile Include="DatabaseContext\UserFluentMap.cs" />
     <Compile Include="DatabaseContext\UserManagementDbContextFactory.cs" />
+    <Compile Include="DomainModel\UserClass.cs" />
     <Compile Include="DomainModel\User.cs" />
+    <Compile Include="OtherDatabaseContext\UserClassFluentMap.cs" />
+    <Compile Include="OtherDatabaseContext\UserClassManagementDbContext.cs" />
+    <Compile Include="OtherDatabaseContext\UserClassManagementDbContextFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DatabaseContext\UserManagementDbContext.cs" />

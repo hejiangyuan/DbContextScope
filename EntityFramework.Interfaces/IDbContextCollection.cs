@@ -7,6 +7,7 @@
  */
 using System;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 
 namespace Numero3.EntityFramework.Interfaces
 {
@@ -19,5 +20,8 @@ namespace Numero3.EntityFramework.Interfaces
         /// Get or create a DbContext instance of the specified type. 
         /// </summary>
 		TDbContext Get<TDbContext>() where TDbContext : DbContext;
+
+        ObjectSet<T> GetObjectSet<TDbContext, T>() where T : class where TDbContext : DbContext;
+
     }
 }

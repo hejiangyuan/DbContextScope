@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Transactions;
 using Numero3.EntityFramework.Demo.BusinessLogicServices;
 using Numero3.EntityFramework.Demo.CommandModel;
 using Numero3.EntityFramework.Demo.DatabaseContext;
+using Numero3.EntityFramework.Demo.DomainModel;
+using Numero3.EntityFramework.Demo.OtherDatabaseContext;
 using Numero3.EntityFramework.Demo.Repositories;
 using Numero3.EntityFramework.Implementation;
 
@@ -16,9 +19,12 @@ namespace Numero3.EntityFramework.Demo
 			//-- Poor-man DI - build our dependencies by hand for this demo
 
             //var dbcontextFactory = new UserManagementDbContextFactory("data source=192.168.0.11;initial catalog=DbContextScopeDemo1;persist security info=True;user id=test;password=111111;MultipleActiveResultSets=True;App=EntityFramework");
-            var dbcontextFactory = new UserManagementDbContextFactory("server=192.168.0.15;port=3306;AutoEnlist=true;user id=root;password=jooge2012;persistsecurityinfo=True;database=test;oldguids=True");
+            var dbcontextFactory = new UserManagementDbContextFactory("server=127.0.0.1;port=3306;AutoEnlist=true;user id=root;password=jooge2012;persistsecurityinfo=True;database=test;oldguids=True");
 
-            var dbContextScopeFactory = new DbContextScopeFactory(dbcontextFactory);
+            //var dbContextScopeFactory = new DbContextScopeFactory(dbcontextFactory);
+
+            var dbContextScopeFactory = new DbContextScopeFactory();
+
 			var ambientDbContextLocator = new AmbientDbContextLocator();
 			var userRepository = new UserRepository(ambientDbContextLocator);
 
@@ -27,12 +33,96 @@ namespace Numero3.EntityFramework.Demo
 			var userEmailService = new UserEmailService(dbContextScopeFactory);
 			var userCreditScoreService = new UserCreditScoreService(dbContextScopeFactory);
 
+            var otherDbcontextFactory = new UserClassManagementDbContextFactory("server=127.0.0.1;port=3306;AutoEnlist=true;user id=root;password=jooge2012;persistsecurityinfo=True;database=test;oldguids=True");
+            //var otherDbContextScopeFactory = new DbContextScopeFactory(otherDbcontextFactory);
+
+            var otherDbContextScopeFactory = new DbContextScopeFactory();
+            var userClassService = new UserClassService(otherDbContextScopeFactory);
+
 			try
 			{
 				Console.WriteLine("This demo application will create a database named DbContextScopeDemo in the default SQL Server instance on localhost. Edit the connection string in UserManagementDbContext if you'd like to create it somewhere else.");
 				Console.WriteLine("Press enter to start...");
 				Console.ReadLine();
 
+
+                Console.WriteLine("一个dbScope中使用2个DbContext 创建 a user and userClass Terry+English...");
+
+                var user = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Terry",
+                    Email = "Terry@jooge.net",
+                    WelcomeEmailSent = false,
+                    CreatedOn = DateTime.UtcNow
+                };
+
+                using (var dbContextScope = dbContextScopeFactory.Create())
+                {
+                    dbContextScope.DbContexts.Get<UserManagementDbContext>().Users.Add(user);
+
+                    userClassService.CreateUserClass(user.Name, "English");
+
+                    dbContextScope.SaveChanges();
+                }
+
+                Console.WriteLine("检查数据库应该有相应的记录user表 和 userClass表");
+                Console.WriteLine("Press enter to continue...");
+                Console.ReadLine();
+
+
+                Console.WriteLine("2个dbcontext 使用事务的情况，");
+                Console.WriteLine("Press enter to continue...");
+                Console.ReadLine();
+
+                user = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Mark",
+                    Email = "Mark@jooge.net",
+                    WelcomeEmailSent = false,
+                    CreatedOn = DateTime.UtcNow
+                };
+
+
+			    int rowCount = 0;
+			    try
+			    {
+			        using (var s = new TransactionScope())
+			        {
+			            using (var dbContextScope = dbContextScopeFactory.Create())
+			            {
+
+                            dbContextScope.DbContexts.Get<UserManagementDbContext>().Users.Add(user);
+                            dbContextScope.SaveChanges();
+			            }
+
+			            rowCount = userClassService.GetRowCount();
+			            userClassService.CreateUserClass(user.Name, "English");
+
+                        throw new Exception("模拟错误");
+
+			            s.Complete();
+			        }
+			    }
+			    catch
+			    {
+			        
+			    }
+
+                var tempUsers = userQueryService.GetUsers(user.Id);
+                Console.WriteLine("Found {0} persisted users. If this number is 0, we're all good. If this number is not 0, we have a big problem.", tempUsers.Count());
+
+			    if (rowCount == userClassService.GetRowCount())
+			    {
+                    Console.WriteLine("userClass表的数量没有变化，是正确的，如果变化了就不对了");
+			    }
+			    else
+			    {
+                    Console.WriteLine("userClass表的数量变化了，是不对的。");
+			    }
+
+			    
 				//-- Demo of typical usage for read and writes
 				Console.WriteLine("Creating a user called Mary...");
 				var marysSpec = new UserCreationSpec("Mary", "mary@example.com");
@@ -138,6 +228,7 @@ namespace Numero3.EntityFramework.Demo
                 Console.WriteLine("Trying to retrieve users by where clause.");
                 var users = userQueryService.GetUserByWhereClause(" WelcomeEmailSent = 1 ");
                 Console.WriteLine("OK. WelcomeEmailSent user count: {0}", users.Count());
+
 
                 Console.WriteLine("Press enter to continue...");
                 Console.ReadLine();

@@ -7,7 +7,8 @@ namespace Numero3.EntityFramework.Demo.DatabaseContext
     {
         private string _nameOrConnectionString;
 
-        public UserManagementDbContextFactory() : this("")
+        public UserManagementDbContextFactory()
+            : this("db1")
         {
         }
 

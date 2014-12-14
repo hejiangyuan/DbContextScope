@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -78,11 +80,21 @@ namespace Numero3.EntityFramework.Implementation
                 if (_isolationLevel.HasValue)
                 {
                     var tran = dbContext.Database.BeginTransaction(_isolationLevel.Value);
+
                     _transactions.Add(dbContext, tran);
                 }
             }
 
             return _initializedDbContexts[requestedType]  as TDbContext;
+        }
+
+        public ObjectSet<T> GetObjectSet<TDbContext, T>() where T : class where TDbContext : DbContext
+        {
+            var context = Get<TDbContext>();
+
+            ObjectContext objectContext = ((IObjectContextAdapter)context).ObjectContext;
+
+            return objectContext.CreateObjectSet<T>();
         }
 
         public int Commit()
