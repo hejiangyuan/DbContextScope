@@ -19,11 +19,9 @@ namespace Numero3.EntityFramework.Demo
 			//-- Poor-man DI - build our dependencies by hand for this demo
 
             //var dbcontextFactory = new UserManagementDbContextFactory("data source=192.168.0.11;initial catalog=DbContextScopeDemo1;persist security info=True;user id=test;password=111111;MultipleActiveResultSets=True;App=EntityFramework");
-            var dbcontextFactory = new UserManagementDbContextFactory("server=127.0.0.1;port=3306;AutoEnlist=true;user id=root;password=jooge2012;persistsecurityinfo=True;database=test;oldguids=True");
+            var dbcontextFactory = new DbContextFactory("server=127.0.0.1;port=3306;AutoEnlist=true;user id=root;password=jooge2012;persistsecurityinfo=True;database=test;oldguids=True");
 
-            //var dbContextScopeFactory = new DbContextScopeFactory(dbcontextFactory);
-
-            var dbContextScopeFactory = new DbContextScopeFactory();
+            var dbContextScopeFactory = new DbContextScopeFactory(dbcontextFactory);
 
 			var ambientDbContextLocator = new AmbientDbContextLocator();
 			var userRepository = new UserRepository(ambientDbContextLocator);
@@ -33,11 +31,7 @@ namespace Numero3.EntityFramework.Demo
 			var userEmailService = new UserEmailService(dbContextScopeFactory);
 			var userCreditScoreService = new UserCreditScoreService(dbContextScopeFactory);
 
-            var otherDbcontextFactory = new UserClassManagementDbContextFactory("server=127.0.0.1;port=3306;AutoEnlist=true;user id=root;password=jooge2012;persistsecurityinfo=True;database=test;oldguids=True");
-            //var otherDbContextScopeFactory = new DbContextScopeFactory(otherDbcontextFactory);
-
-            var otherDbContextScopeFactory = new DbContextScopeFactory();
-            var userClassService = new UserClassService(otherDbContextScopeFactory);
+            var userClassService = new UserClassService(dbContextScopeFactory);
 
 			try
 			{

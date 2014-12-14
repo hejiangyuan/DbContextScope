@@ -10,11 +10,6 @@ namespace Numero3.EntityFramework.Demo.OtherDatabaseContext
 		// Map our 'User' model by convention
         public DbSet<UserClass> UserClass { get; set; }
 
-	    public UserClassManagementDbContext() : base("db1")
-	    {
-	        
-	    }
-
         public UserClassManagementDbContext(string nameOrConnectionString) :
 	        base(nameOrConnectionString)
 	    {
